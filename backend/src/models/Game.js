@@ -4,44 +4,36 @@ const gameSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true,
   },
-  releaseDate: {
-    type: Date,
-    default: null,
+  console: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Console',
+    required: true,
   },
-  cover: {
-    type: String, // URL da imagem da capa
-    default: null,
+  isWishlist: {
+    type: Boolean,
+    default: false,
   },
-  metacriticRating: {
+  rawgId: {
     type: Number,
-    min: 0,
-    max: 100,
+    unique: true,
+    sparse: true,
     default: null,
   },
+  releaseDate: Date,
+  cover: String,
+  metacriticRating: Number,
   userRating: {
     type: Number,
     min: 0,
     max: 100,
-    default: null,
   },
   status: {
     type: String,
     enum: ['Backlog', 'Played', 'I Wanna Play!'],
     default: 'Backlog',
   },
-  isWishlist: {
-    type: Boolean,
-    default: false,
-  },
-  // Referência ao console, crucial para o requisito de associação
-  console: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Console',
-    required: true,
-  },
-});
+}, { timestamps: true });
 
 const Game = mongoose.model('Game', gameSchema);
 

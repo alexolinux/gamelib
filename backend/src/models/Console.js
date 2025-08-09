@@ -4,14 +4,15 @@ const consoleSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true,
-    unique: true
+    unique: true,
   },
   rawgId: {
     type: Number,
-    default: null
-  }
-});
+    unique: true,
+    sparse: true, // This is the crucial fix.
+    default: null,
+  },
+}, { timestamps: true });
 
 const Console = mongoose.model('Console', consoleSchema);
 
