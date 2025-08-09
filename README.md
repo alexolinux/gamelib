@@ -18,6 +18,14 @@ A web application for managing your video game collection.
 - `docker` and  `docker-compose`
 - [RAWG.io](https://rawg.io/apidocs) API key to your request
 
+## Structure
+
+The application consists of the following containerized microservices:
+
+- **Database**:   MongoDB (Latest)
+- **Backend**:    NodeJS v20 Express
+- **Frontend**:   NodeJS v20 + React + Vite + Tailwindcss
+
 ## How to run
 
 Clone the repository using the provided URL:
