@@ -66,3 +66,5 @@ All credit to my great friend and brother **[Tiago-S-Ribeiro](https://github.com
 ## Author
 
 [Alex Mendes](https://alexolinux.com/)
+
+**LinkedIn**: [AlexMendes](https://www.linkedin.com/in/mendesalex)
