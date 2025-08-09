@@ -1,20 +1,23 @@
-# Usa a imagem oficial do Node 20-alpine como base
-FROM node:20-alpine
+# Use an official Node.js runtime as a parent image
+FROM node:20
 
-# Define o diretório de trabalho dentro do container
-WORKDIR /app
+# Set the working directory
+WORKDIR /usr/src/app
 
-# Copia os arquivos de dependências
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Instala as dependências
+# Install app dependencies
 RUN npm install
 
-# Copia o resto do código da aplicação
+# Copy the rest of the application's source code
 COPY . .
 
-# Expõe a porta que a aplicação irá rodar
+# Build the app for production
+RUN npm run build
+
+# Expose the port the app runs on
 EXPOSE 5173
 
-# Comando para iniciar o servidor de desenvolvimento (Vite)
-CMD ["npm", "run", "dev", "--", "--host"]
+# Define the command to run the app
+CMD ["npm", "run", "dev"]
