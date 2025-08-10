@@ -4,6 +4,7 @@ import EditGame from './EditGame';
 
 const GameCatalog = ({ games, fetchGames, showWishlist }) => {
   const [editingGame, setEditingGame] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleDelete = async (gameId) => {
     if (window.confirm('Are you sure you want to delete this game?')) {
@@ -20,6 +21,10 @@ const GameCatalog = ({ games, fetchGames, showWishlist }) => {
   const handleAcquireGame = async (game) => {
     try {
       await api.put(`/games/${game._id}`, { ...game, isWishlist: false, status: 'Backlog' });
+      setSuccessMessage('Game acquired! Have fun!');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
       fetchGames();
     } catch (error) {
       alert(error.response?.data?.message || 'Error moving game to catalog.');
@@ -32,8 +37,13 @@ const GameCatalog = ({ games, fetchGames, showWishlist }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+      {successMessage && (
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 bg-green-500 text-white p-3 rounded-md shadow-md z-50">
+          {successMessage}
+        </div>
+      )}
       {games.map(game => (
-        <div key={game._id} className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col">
+        <div key={game._id} className="bg-slate-800/70 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden flex flex-col transition-transform duration-300 hover:scale-105 border-2 border-transparent hover:border-violet-400 hover:shadow-violet-400/30">
           <div className="relative h-48">
             <img 
               src={game.cover || 'https://via.placeholder.com/300x200?text=No+Cover'} 

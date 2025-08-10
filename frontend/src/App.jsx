@@ -11,7 +11,7 @@ const App = () => {
   const [selectedConsole, setSelectedConsole] = useState(null);
   const [showAddConsoleModal, setShowAddConsoleModal] = useState(false);
   const [showAddGameModal, setShowAddGameModal] = useState(false);
-  const [showWishlist, setShowWishlist] = useState(false); // New state for Wishlist
+  const [showWishlist, setShowWishlist] = useState(false);
 
   const fetchConsoles = async () => {
     try {
@@ -39,60 +39,74 @@ const App = () => {
   useEffect(() => {
     fetchConsoles();
     fetchGames();
-  }, [showWishlist]); // Re-fetch games when showWishlist changes
+  }, [showWishlist]);
 
   const handleSelectConsole = (console) => {
     setSelectedConsole(console);
     fetchGames(console?._id);
   };
+  
+  // New button style for the design revamp
+  const newButtonStyle = "px-6 py-2 font-bold transition-all duration-300 border border-violet-400/20 bg-slate-900/70 backdrop-blur-sm rounded-full shadow-md hover:border-violet-400 hover:shadow-violet-400/30";
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans">
-      <header className="p-6 bg-gray-800 shadow-md flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Game Library</h1>
-        <div className="space-x-4">
-          <button onClick={() => setShowAddConsoleModal(true)} className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold">
-            Add Console
-          </button>
-          <button onClick={() => setShowAddGameModal(true)} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-bold">
-            Add Game
-          </button>
-        </div>
-      </header>
+    <div 
+      className="min-h-screen text-white font-sans flex flex-col bg-cover bg-center bg-fixed"
+      style={{ backgroundImage: "url('/bg.jpg')" }}
+    >
+      <div className="bg-black/70 flex flex-col flex-1">
+        <header className="p-6 bg-slate-900/70 backdrop-blur-sm border-b border-slate-800 shadow-lg flex justify-between items-center z-10">
+          <h1 className="text-3xl font-bold">Game Library</h1>
+          <div className="space-x-4">
+            <button 
+              onClick={() => setShowAddConsoleModal(true)} 
+              className={newButtonStyle}
+            >
+              Add Console
+            </button>
+            <button 
+              onClick={() => setShowAddGameModal(true)} 
+              className={newButtonStyle}
+            >
+              Add Game
+            </button>
+          </div>
+        </header>
 
-      <main className="flex">
-        <ConsoleList 
-          consoles={consoles} 
-          selectedConsole={selectedConsole} 
-          onSelectConsole={handleSelectConsole}
-          fetchConsoles={fetchConsoles}
-          fetchGames={fetchGames}
-          showWishlist={showWishlist} // Pass to ConsoleList
-          setShowWishlist={setShowWishlist} // Pass to ConsoleList
-        />
-        <GameCatalog games={games} fetchGames={() => fetchGames(selectedConsole?._id)} showWishlist={showWishlist} />
-      </main>
+        <main className="flex flex-1">
+          <ConsoleList 
+            consoles={consoles} 
+            selectedConsole={selectedConsole} 
+            onSelectConsole={handleSelectConsole}
+            fetchConsoles={fetchConsoles}
+            fetchGames={fetchGames}
+            showWishlist={showWishlist}
+            setShowWishlist={setShowWishlist}
+          />
+          <GameCatalog games={games} fetchGames={() => fetchGames(selectedConsole?._id)} showWishlist={showWishlist} />
+        </main>
 
-      {showAddConsoleModal && (
-        <AddConsole
-          onClose={() => setShowAddConsoleModal(false)}
-          onConsoleAdded={() => {
-            fetchConsoles();
-            setShowAddConsoleModal(false);
-          }}
-        />
-      )}
+        {showAddConsoleModal && (
+          <AddConsole
+            onClose={() => setShowAddConsoleModal(false)}
+            onConsoleAdded={() => {
+              fetchConsoles();
+              setShowAddConsoleModal(false);
+            }}
+          />
+        )}
 
-      {showAddGameModal && (
-        <AddGame
-          consoles={consoles}
-          onClose={() => setShowAddGameModal(false)}
-          onGameAdded={() => {
-            fetchGames(selectedConsole?._id);
-            setShowAddGameModal(false);
-          }}
-        />
-      )}
+        {showAddGameModal && (
+          <AddGame
+            consoles={consoles}
+            onClose={() => setShowAddGameModal(false)}
+            onGameAdded={() => {
+              fetchGames(selectedConsole?._id);
+              setShowAddGameModal(false);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
