@@ -41,120 +41,121 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
 
   const addGame = async (gamePayload) => {
     try {
-      const response = await api.post('/games', gamePayload);
+      await api.post('/games', gamePayload);
+      alert('Game added successfully!');
       onGameAdded();
-      alert(`Game "${response.data.name}" added successfully to your ${gamePayload.isWishlist ? 'Wishlist' : 'Catalog'}!`);
     } catch (error) {
-      alert(error.response?.data?.message || 'Error adding game.');
+      alert(error.response?.data?.message || 'Error adding game');
     }
   };
 
-  const handleAddRawgGame = (game, isWishlist = false) => {
-    const newGame = {
+  const handleAddRawgGame = (game, isWishlist) => {
+    addGame({
       name: game.name,
       console: selectedConsole,
       rawgId: game.id,
-      cover: game.background_image,
       releaseDate: game.released,
+      cover: game.background_image,
       metacriticRating: game.metacritic,
-      isWishlist: isWishlist,
-      status: isWishlist ? 'I Wanna Play!' : 'Backlog',
-      userRating: null,
-    };
-    addGame(newGame);
+      isWishlist
+    });
   };
 
-  const handleAddManualGame = (isWishlist = false) => {
-    if (!manualName || !selectedConsole) {
-      alert('Please provide a name and select a console.');
-      return;
-    }
-    const newGame = {
+  const handleAddManualGame = async (isWishlist) => {
+    addGame({
       name: manualName,
       console: selectedConsole,
       releaseDate: manualReleaseDate,
       cover: manualCover,
       metacriticRating: manualMetacritic,
-      isWishlist: isWishlist,
-      status: isWishlist ? 'I Wanna Play!' : 'Backlog',
-      userRating: null,
-    };
-    addGame(newGame);
+      isWishlist,
+      status: manualStatus
+    });
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Add New Game</h2>
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/2 text-white">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Add New Game</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">&times;</button>
         </div>
-        
+        <div className="mb-4">
+          <label className="block mb-2">Select a console</label>
+          <select
+            value={selectedConsole}
+            onChange={(e) => setSelectedConsole(e.target.value)}
+            className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+          >
+            <option value="">Select a console...</option>
+            {consoles.map(c => (
+              <option key={c._id} value={c._id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
         <div className="flex items-center mb-4">
           <input
             type="checkbox"
-            id="manualAdd"
             checked={showManualForm}
-            onChange={(e) => setShowManualForm(e.target.checked)}
-            className="form-checkbox h-4 w-4 text-teal-600 transition duration-150 ease-in-out"
+            onChange={() => setShowManualForm(!showManualForm)}
+            className="form-checkbox"
           />
-          <label htmlFor="manualAdd" className="ml-2 text-white">Add manually</label>
+          <span className="ml-2">Add manually</span>
         </div>
-
-        <div className="space-y-4">
-          <select 
-            value={selectedConsole}
-            onChange={(e) => setSelectedConsole(e.target.value)}
-            className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
-          >
-            <option value="">Select a console...</option>
-            {consoles.map(consoleItem => (
-              <option key={consoleItem._id} value={consoleItem._id}>{consoleItem.name}</option>
-            ))}
-          </select>
-          
+        <div>
           {showManualForm ? (
-            <>
-              <input
-                type="text"
-                value={manualName}
-                onChange={(e) => setManualName(e.target.value)}
-                placeholder="Game Name"
-                className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
-              />
-              <input
-                type="text"
-                value={manualCover}
-                onChange={(e) => setManualCover(e.target.value)}
-                placeholder="Cover Image URL (optional)"
-                className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
-              />
-              <input
-                type="date"
-                value={manualReleaseDate}
-                onChange={(e) => setManualReleaseDate(e.target.value)}
-                placeholder="Release Date (optional)"
-                className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
-              />
-              <input
-                type="number"
-                value={manualMetacritic}
-                onChange={(e) => setManualMetacritic(e.target.value)}
-                placeholder="Metacritic Score (optional)"
-                className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
-              />
-              <div className="flex space-x-2 mt-4">
-                <button onClick={() => handleAddManualGame(false)} className="flex-1 bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-bold">
-                  Add to Catalog
+            // Manual Add Form
+            <form onSubmit={(e) => { e.preventDefault(); handleAddManualGame(false); }}>
+              <div className="mb-4">
+                <label className="block mb-2">Game Name</label>
+                <input
+                  type="text"
+                  value={manualName}
+                  onChange={(e) => setManualName(e.target.value)}
+                  className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Release Date</label>
+                <input
+                  type="date"
+                  value={manualReleaseDate}
+                  onChange={(e) => setManualReleaseDate(e.target.value)}
+                  className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Cover Image URL</label>
+                <input
+                  type="text"
+                  value={manualCover}
+                  onChange={(e) => setManualCover(e.target.value)}
+                  className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Metacritic Rating</label>
+                <input
+                  type="number"
+                  value={manualMetacritic}
+                  onChange={(e) => setManualMetacritic(e.target.value)}
+                  className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <button type="submit" className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-bold flex-grow">
+                  Add Game
                 </button>
-                <button onClick={() => handleAddManualGame(true)} className="flex-1 bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded font-bold">
+                <button type="button" onClick={() => handleAddManualGame(true)} className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded font-bold flex-grow">
                   Add to Wishlist
                 </button>
               </div>
-            </>
+            </form>
           ) : (
+            // RAWG Search Form
             <>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 mb-4">
                 <input
                   type="text"
                   value={searchQuery}

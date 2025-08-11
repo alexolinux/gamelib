@@ -76,3 +76,6 @@ All credit to my great friend and brother **[Tiago-S-Ribeiro](https://github.com
 [Alex Mendes](https://alexolinux.com/)
 
 **LinkedIn**: [AlexMendes](https://www.linkedin.com/in/mendesalex)
+
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

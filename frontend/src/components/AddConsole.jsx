@@ -16,7 +16,7 @@ const AddConsole = ({ onConsoleAdded, onClose }) => {
         console.error('Error fetching RAWG platforms:', error);
       }
     };
-    fetchPlatforms(); // <--- This call was missing or incorrect
+    fetchPlatforms();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -40,10 +40,10 @@ const AddConsole = ({ onConsoleAdded, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4">
-      <div className="bg-gray-800 rounded-lg p-8 w-full max-w-md">
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Add New Console</h2>
+          <h2 className="text-xl font-bold">Add New Console</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
