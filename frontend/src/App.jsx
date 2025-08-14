@@ -77,7 +77,16 @@ const App = () => {
       className="min-h-screen text-white font-sans flex flex-col bg-[url('/bg.jpg')] bg-cover bg-center bg-fixed"
     >
       <header className="p-6 bg-slate-900/70 backdrop-blur-sm border-b border-slate-800 shadow-lg flex justify-between items-center z-10">
-        <h1 className="text-3xl font-bold">Game Library</h1>
+        <div className="flex items-center gap-3">
+          <img
+            src="/gamelib-logo.png"
+            alt="GameLib Logo"
+            className="h-14 w-14 drop-shadow-lg"
+          />
+          <span className="text-3xl font-bold bg-gradient-to-r from-violet-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-md animate-pulse">
+            GameLib
+          </span>
+        </div>
         <div className="space-x-4">
           <button 
             onClick={() => setShowAddConsoleModal(true)} 
@@ -105,7 +114,16 @@ const App = () => {
           fetchGames={fetchGames}
           showWishlist={showWishlist}
         />
-        <GameCatalog games={games} fetchGames={() => fetchGames(selectedConsole?._id)} showWishlist={showWishlist} setEditingGame={setEditingGame} />
+        <GameCatalog 
+          games={games}
+          fetchGames={() => fetchGames(selectedConsole?._id)}
+          showWishlist={showWishlist}
+          setEditingGame={setEditingGame}
+          // Adicione as props abaixo se quiser controlar filtros/ordenação no App
+          // onSearch={...}
+          // onSort={...}
+          // onFilter={...}
+        />
       </main>
 
       {showAddConsoleModal && (
@@ -138,6 +156,18 @@ const App = () => {
           }}
         />
       )}
+      {/* Footer de créditos */}
+      <footer className="w-full text-center py-4 bg-slate-900/70 backdrop-blur-sm border-t border-slate-800 text-gray-400 text-sm mt-auto">
+        Created by{' '}
+        <a
+          href="https://alexolinux.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-violet-400 hover:underline font-semibold"
+        >
+          Alex Mendes
+        </a>
+      </footer>
     </div>
   );
 };
