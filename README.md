@@ -90,7 +90,7 @@ All thanks to my great friend and brother **[Tiago-S-Ribeiro](https://github.com
 
 ## 👤 Author
 
-**Alex Mendes** - [alexolinux.com](https://alexolinux.com/)
+**Alex Mendes** - [alexolinux](https://github.com/alexolinux/)
 - [LinkedIn](https://www.linkedin.com/in/mendesalex)
 
 ---
