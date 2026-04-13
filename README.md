@@ -94,4 +94,5 @@ All thanks to my great friend and brother **[Tiago-S-Ribeiro](https://github.com
 - [LinkedIn](https://www.linkedin.com/in/mendesalex)
 
 ---
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+
