@@ -5,7 +5,7 @@ const EditGame = ({ game, onClose, onGameUpdated }) => {
   const [name, setName] = useState(game.name || '');
   const [status, setStatus] = useState(game.status || 'Backlog');
   const [userRating, setUserRating] = useState(game.userRating || '');
-  const [metacriticRating, setMetacriticRating] = useState(game.metacriticRating || '');
+  const [criticRating, setCriticRating] = useState(game.criticRating ?? game.metacriticRating ?? '');
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -14,7 +14,7 @@ const EditGame = ({ game, onClose, onGameUpdated }) => {
         name,
         status,
         userRating: userRating || null,
-        metacriticRating: metacriticRating || null,
+        criticRating: criticRating || null,
       };
       await api.put(`/games/${game._id}`, updatedGame);
       onGameUpdated();
@@ -53,11 +53,11 @@ const EditGame = ({ game, onClose, onGameUpdated }) => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Metacritic Rating (0-100)</label>
+            <label className="block text-sm font-medium mb-1">Critics Rating (0-100)</label>
             <input
               type="number"
-              value={metacriticRating}
-              onChange={(e) => setMetacriticRating(e.target.value)}
+              value={criticRating}
+              onChange={(e) => setCriticRating(e.target.value)}
               min="0"
               max="100"
               className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
@@ -66,7 +66,7 @@ const EditGame = ({ game, onClose, onGameUpdated }) => {
           </div>
           {status === 'Played' && (
             <div>
-              <label className="block text-sm font-medium mb-1">User Rating (0-100)</label>
+              <label className="block text-sm font-medium mb-1">Personal Rating (0-100)</label>
               <input
                 type="number"
                 value={userRating}

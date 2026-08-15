@@ -8,6 +8,10 @@ const GameCatalog = ({ games, fetchGames, showWishlist, setEditingGame, stats })
   const [sortOrder, setSortOrder] = useState('asc');
   const [statusFilter, setStatusFilter] = useState('');
 
+  const formatRating = (rating) => Number(rating).toLocaleString('en-US', {
+    maximumFractionDigits: 1,
+  });
+
   const handleDelete = async (gameId) => {
     if (window.confirm('Are you sure you want to delete this game?')) {
       try {
@@ -49,8 +53,8 @@ const GameCatalog = ({ games, fetchGames, showWishlist, setEditingGame, stats })
     } else if (sortBy === 'status') {
       comparison = a.status.localeCompare(b.status);
     } else if (sortBy === 'rating') {
-      // Prioridade para metacriticRating, fallback para userRating
-      const getRating = (g) => g.metacriticRating ?? g.userRating ?? -1;
+      // Prefer external review scores; the personal score remains independent.
+      const getRating = (g) => g.criticRating ?? g.metacriticRating ?? g.communityRating ?? g.userRating ?? -1;
       comparison = getRating(a) - getRating(b);
     }
 
@@ -178,14 +182,19 @@ const GameCatalog = ({ games, fetchGames, showWishlist, setEditingGame, stats })
                     <span className="font-semibold">Release:</span> {new Date(game.releaseDate).toLocaleDateString()}
                   </p>
                 )}
-                {game.metacriticRating && (
+                {(game.criticRating ?? game.metacriticRating) != null && (
                   <p className="text-gray-400 text-sm mb-1 truncate">
-                    <span className="font-semibold">Metacritic:</span> {game.metacriticRating}
+                    <span className="font-semibold">Critics Rating:</span> {formatRating(game.criticRating ?? game.metacriticRating)}
+                  </p>
+                )}
+                {game.communityRating != null && (
+                  <p className="text-gray-400 text-sm mb-1 truncate">
+                    <span className="font-semibold">User Rating (IGDB):</span> {formatRating(game.communityRating)}
                   </p>
                 )}
                 {game.userRating && (
                   <p className="text-gray-400 text-sm mb-1 truncate">
-                    <span className="font-semibold">User Rating:</span> {game.userRating}
+                    <span className="font-semibold">Personal Rating:</span> {formatRating(game.userRating)}
                   </p>
                 )}
                 {game.status && (

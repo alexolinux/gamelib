@@ -11,7 +11,7 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
   const [manualName, setManualName] = useState('');
   const [manualReleaseDate, setManualReleaseDate] = useState('');
   const [manualCover, setManualCover] = useState('');
-  const [manualMetacritic, setManualMetacritic] = useState('');
+  const [manualCriticRating, setManualCriticRating] = useState('');
   const [manualStatus, setManualStatus] = useState('Backlog');
 
   const handleSearch = async () => {
@@ -56,7 +56,8 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
       igdbId: game.id,
       releaseDate: game.releaseDate,
       cover: game.cover,
-      userRating: game.rating,
+      criticRating: game.criticRating,
+      communityRating: game.communityRating,
       isWishlist
     });
   };
@@ -67,7 +68,7 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
       console: selectedConsole,
       releaseDate: manualReleaseDate,
       cover: manualCover,
-      metacriticRating: manualMetacritic,
+      criticRating: manualCriticRating,
       isWishlist,
       status: manualStatus
     });
@@ -135,11 +136,11 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-2">Metacritic Rating</label>
+                <label className="block mb-2">Critics Rating</label>
                 <input
                   type="number"
-                  value={manualMetacritic}
-                  onChange={(e) => setManualMetacritic(e.target.value)}
+                  value={manualCriticRating}
+                  onChange={(e) => setManualCriticRating(e.target.value)}
                   className="w-full p-2 rounded bg-gray-700 border border-gray-600"
                 />
               </div>

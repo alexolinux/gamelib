@@ -26,6 +26,19 @@ const gameSchema = new mongoose.Schema({
   releaseDate: Date,
   cover: String,
   metacriticRating: Number,
+  // Critic aggregate. New records use IGDB's aggregated_rating; legacy
+  // metacriticRating values can be promoted by the rating-fields migration.
+  criticRating: {
+    type: Number,
+    min: 0,
+    max: 100,
+  },
+  // External/community rating from IGDB. It is distinct from the owner's score.
+  communityRating: {
+    type: Number,
+    min: 0,
+    max: 100,
+  },
   userRating: {
     type: Number,
     min: 0,

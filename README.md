@@ -79,6 +79,20 @@ docker-compose exec backend node scripts/migrate-rawg-to-igdb.js --apply
 
 After migration, consoles without igdbId remain functional for manual registration, but cannot be used in IGDB search until they receive the corresponding ID.
 
+If games were added between the first IGDB integration version and the ratings correction, run the simulation below. It only moves an external rating that is safely identifiable to `communityRating`; distinct personal ratings remain untouched.
+
+```shell
+docker-compose exec backend node scripts/repair-igdb-personal-ratings.js
+docker-compose exec backend node scripts/repair-igdb-personal-ratings.js --apply
+```
+
+The catalog now uses provider-neutral rating fields: `criticRating` (IGDB's critic aggregate), `communityRating` (IGDB user score), and `userRating` (your personal score). To promote historic Metacritic values to `criticRating` while retaining the original field, run:
+
+```shell
+docker-compose exec backend node scripts/migrate-rating-fields.js
+docker-compose exec backend node scripts/migrate-rating-fields.js --apply
+```
+
 ## 💾 Database Management
 
 A portable script for database operations located in `scripts/db-manager.sh`.
