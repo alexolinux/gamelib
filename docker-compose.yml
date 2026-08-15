@@ -23,7 +23,8 @@ services:
       - /usr/src/app/node_modules
     #environment:
     #  - MONGO_URI=${MONGO_URI}
-    #  - RAWG_API_KEY=${RAWG_API_KEY}
+    #  - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
+    #  - IGDB_CLIENT_SECRET=${IGDB_CLIENT_SECRET}
     env_file:
       - .env
     depends_on:
@@ -61,4 +62,3 @@ volumes:
 networks:
   xlocal:
     driver: bridge
-
