@@ -60,24 +60,24 @@ The application consists of containerized microservices:
 5. **Access**:
    Open browser at [http://localhost:5173](http://localhost:5173).
 
-## 🔁 Migração RAWG → IGDB
+## 🔁 Migration from RAWG → to IGDB
 
-Os IDs do RAWG não são compatíveis com os IDs do IGDB. O migrador liga os documentos atuais ao IGDB pelo nome exato da plataforma e do jogo, mantendo `rawgId` como histórico e sem substituir metadados, estado ou lista de desejos.
+RAWG IDs are not compatible with IGDB IDs. The migrator links current documents to IGDB using the exact platform and game name, keeping rawgId as historical data and not replacing metadata, status, or wishlist.
 
-Antes de alterar a base, faça um backup e execute uma simulação:
+Before changing the database, create a backup and run a simulation:
 
 ```shell
 ./scripts/db-manager.sh backup
-docker compose exec backend node scripts/migrate-rawg-to-igdb.js
+docker-compose exec backend node scripts/migrate-rawg-to-igdb.js
 ```
 
-Revise no relatório as secções `unmatched` e `ambiguous`. Corrija manualmente esses itens no MongoDB (ou cadastre a plataforma correta pela aplicação) e só então aplique os vínculos encontrados:
+Review the unmatched and ambiguous sections in the report. Manually correct these items in MongoDB (or register the correct platform via the application) and then apply the found links:
 
 ```shell
-docker compose exec backend node scripts/migrate-rawg-to-igdb.js --apply
+docker-compose exec backend node scripts/migrate-rawg-to-igdb.js --apply
 ```
 
-Depois da migração, consoles sem `igdbId` continuam funcionais para cadastro manual, mas não podem ser usados na busca do IGDB até receberem o ID correspondente.
+After migration, consoles without igdbId remain functional for manual registration, but cannot be used in IGDB search until they receive the corresponding ID.
 
 ## 💾 Database Management
 
