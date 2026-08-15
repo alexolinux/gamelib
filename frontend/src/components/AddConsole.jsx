@@ -3,17 +3,17 @@ import api from '../api';
 
 const AddConsole = ({ onConsoleAdded, onClose }) => {
   const [name, setName] = useState('');
-  const [rawgId, setRawgId] = useState('');
-  const [rawgPlatforms, setRawgPlatforms] = useState([]);
+  const [igdbId, setIgdbId] = useState('');
+  const [igdbPlatforms, setIgdbPlatforms] = useState([]);
   const [isManual, setIsManual] = useState(false);
 
   useEffect(() => {
     const fetchPlatforms = async () => {
       try {
-        const response = await api.get('/consoles/rawg-platforms');
-        setRawgPlatforms(response.data);
+        const response = await api.get('/consoles/igdb-platforms');
+        setIgdbPlatforms(response.data);
       } catch (error) {
-        console.error('Error fetching RAWG platforms:', error);
+        console.error('Error fetching IGDB platforms:', error);
       }
     };
     fetchPlatforms();
@@ -22,7 +22,7 @@ const AddConsole = ({ onConsoleAdded, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/consoles', { name, rawgId: rawgId || null });
+      await api.post('/consoles', { name, igdbId: igdbId || null });
       alert('Console added successfully!');
       onConsoleAdded();
     } catch (error) {
@@ -32,10 +32,10 @@ const AddConsole = ({ onConsoleAdded, onClose }) => {
 
   const handleSelectChange = (e) => {
     const selectedId = e.target.value;
-    const selectedPlatform = rawgPlatforms.find(p => p.id == selectedId);
+    const selectedPlatform = igdbPlatforms.find(p => p.id == selectedId);
     if (selectedPlatform) {
       setName(selectedPlatform.name);
-      setRawgId(selectedPlatform.id);
+      setIgdbId(selectedPlatform.id);
     }
   };
 
@@ -53,7 +53,10 @@ const AddConsole = ({ onConsoleAdded, onClose }) => {
                 type="checkbox"
                 className="form-checkbox"
                 checked={isManual}
-                onChange={(e) => setIsManual(e.target.checked)}
+                onChange={(e) => {
+                  setIsManual(e.target.checked);
+                  setIgdbId('');
+                }}
               />
               <span className="ml-2">Add manually</span>
             </label>
@@ -72,15 +75,15 @@ const AddConsole = ({ onConsoleAdded, onClose }) => {
               </>
             ) : (
               <>
-                <label className="block mb-2">Select RAWG Console</label>
+                <label className="block mb-2">Select IGDB Console</label>
                 <select
-                  value={rawgId}
+                  value={igdbId}
                   onChange={handleSelectChange}
                   className="w-full p-2 rounded bg-gray-700 border border-gray-600"
                   required
                 >
                   <option value="">Select a console...</option>
-                  {rawgPlatforms.map(platform => (
+                  {igdbPlatforms.map(platform => (
                     <option key={platform.id} value={platform.id}>{platform.name}</option>
                   ))}
                 </select>
