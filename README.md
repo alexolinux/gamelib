@@ -62,36 +62,7 @@ The application consists of containerized microservices:
 
 ## 🔁 Migration from RAWG → to IGDB
 
-RAWG IDs are not compatible with IGDB IDs. The migrator links current documents to IGDB using the exact platform and game name, keeping rawgId as historical data and not replacing metadata, status, or wishlist.
-
-Before changing the database, create a backup and run a simulation:
-
-```shell
-./scripts/db-manager.sh backup
-docker-compose exec backend node scripts/migrate-rawg-to-igdb.js
-```
-
-Review the unmatched and ambiguous sections in the report. Manually correct these items in MongoDB (or register the correct platform via the application) and then apply the found links:
-
-```shell
-docker-compose exec backend node scripts/migrate-rawg-to-igdb.js --apply
-```
-
-After migration, consoles without igdbId remain functional for manual registration, but cannot be used in IGDB search until they receive the corresponding ID.
-
-If games were added between the first IGDB integration version and the ratings correction, run the simulation below. It only moves an external rating that is safely identifiable to `communityRating`; distinct personal ratings remain untouched.
-
-```shell
-docker-compose exec backend node scripts/repair-igdb-personal-ratings.js
-docker-compose exec backend node scripts/repair-igdb-personal-ratings.js --apply
-```
-
-The catalog now uses provider-neutral rating fields: `criticRating` (IGDB's critic aggregate), `communityRating` (IGDB user score), and `userRating` (your personal score). To promote historic Metacritic values to `criticRating` while retaining the original field, run:
-
-```shell
-docker-compose exec backend node scripts/migrate-rating-fields.js
-docker-compose exec backend node scripts/migrate-rating-fields.js --apply
-```
+This project was developed using RAWg.io. This project seems to be dead. With RAWg.io unavailable, gamelib project has been migrated to IGDB.
 
 ## 💾 Database Management
 
