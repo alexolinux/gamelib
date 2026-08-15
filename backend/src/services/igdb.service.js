@@ -57,7 +57,7 @@ exports.searchGames = async (searchTerm, platformId) => {
   const search = escapeIgdbSearch(searchTerm);
   const games = await query(
     'games',
-    `search "${search}"; fields id,name,first_release_date,cover.url,total_rating,rating,platforms; where platforms = ${Number(platformId)} & version_parent = null; sort total_rating_count desc; limit 25;`
+    `search "${search}"; fields id,name,first_release_date,cover.url,aggregated_rating,rating,total_rating,platforms; where platforms = (${Number(platformId)}) & version_parent = null; limit 25;`
   );
 
   return games.map((game) => ({
@@ -65,8 +65,14 @@ exports.searchGames = async (searchTerm, platformId) => {
     name: game.name,
     releaseDate: game.first_release_date ? new Date(game.first_release_date * 1000).toISOString() : null,
     cover: coverUrl(game.cover?.url),
-    rating: game.total_rating ?? game.rating ?? null,
+    criticRating: game.aggregated_rating ?? null,
+    communityRating: game.rating ?? game.total_rating ?? null,
   }));
+};
+
+exports.getGameRatings = async (igdbId) => {
+  const games = await query('games', `fields rating,total_rating; where id = ${Number(igdbId)}; limit 1;`);
+  return games[0] || null;
 };
 
 // Exported for the one-off migration script. Application routes use the normalized methods above.

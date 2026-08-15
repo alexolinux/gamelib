@@ -35,7 +35,7 @@ router.get('/stats', async (req, res) => {
 
 // Add a game to the catalog (from IGDB or manually)
 router.post('/', async (req, res) => {
-  const { name, console, igdbId, releaseDate, cover, metacriticRating, userRating, status, isWishlist } = req.body;
+  const { name, console, igdbId, releaseDate, cover, criticRating, communityRating, userRating, status, isWishlist } = req.body;
   try {
     // IGDB identifies a game globally; a collection can contain it once per console.
     if (igdbId) {
@@ -51,7 +51,8 @@ router.post('/', async (req, res) => {
       igdbId: igdbId || null,
       releaseDate: releaseDate || null,
       cover: cover || null,
-      metacriticRating: metacriticRating || null,
+      criticRating: criticRating || null,
+      communityRating: communityRating || null,
       userRating: userRating || null,
       status: status || (isWishlist ? 'I Wanna Play!' : 'Backlog'),
       isWishlist: isWishlist || false,
@@ -94,11 +95,11 @@ router.get('/:id', async (req, res) => {
 
 // Edit a game
 router.put('/:id', async (req, res) => {
-  const { name, releaseDate, cover, metacriticRating, userRating, status, isWishlist } = req.body;
+  const { name, releaseDate, cover, criticRating, userRating, status, isWishlist } = req.body;
   try {
     const updatedGame = await Game.findByIdAndUpdate(
       req.params.id,
-      { name, releaseDate, cover, metacriticRating, userRating, status, isWishlist },
+      { name, releaseDate, cover, criticRating, userRating, status, isWishlist },
       { new: true, runValidators: true }
     );
     if (!updatedGame) return res.status(404).json({ message: 'Game not found' });
