@@ -6,14 +6,14 @@ A smooth, modern web application for managing your video game collection. Built 
 
 - **Multi-Device Support**: Fully responsive design for Smartphones, Tablets, and Desktops.
 - **Collection Management**: Easily organize your consoles and games.
-- **RAWG.io Integration**: Search and add games directly from the RAWG database.
+- **IGDB Integration**: Search and add games directly from the IGDB database.
 - **Filter & Sort**: Organize your library by status, metacritic score, and release date.
 - **Wishlist**: Keep track of the games you want to play next.
 
 ## 🚀 Requirements
 
 - `docker` and `docker-compose`
-- [RAWG.io](https://rawg.io/apidocs) API key.
+- An [IGDB](https://api-docs.igdb.com/) Client ID and Client Secret (created in the Twitch Developer Console).
 
 ## 🏗️ Structure
 
@@ -38,7 +38,7 @@ The application consists of containerized microservices:
    
    ```shell
    cp env.template .env
-   # Edit .env with your RAWG_API_KEY
+   # Edit .env with IGDB_CLIENT_ID and IGDB_CLIENT_SECRET
    ```
 
 4. **Start the Application**:
@@ -59,6 +59,25 @@ The application consists of containerized microservices:
 
 5. **Access**:
    Open browser at [http://localhost:5173](http://localhost:5173).
+
+## 🔁 Migração RAWG → IGDB
+
+Os IDs do RAWG não são compatíveis com os IDs do IGDB. O migrador liga os documentos atuais ao IGDB pelo nome exato da plataforma e do jogo, mantendo `rawgId` como histórico e sem substituir metadados, estado ou lista de desejos.
+
+Antes de alterar a base, faça um backup e execute uma simulação:
+
+```shell
+./scripts/db-manager.sh backup
+docker compose exec backend node scripts/migrate-rawg-to-igdb.js
+```
+
+Revise no relatório as secções `unmatched` e `ambiguous`. Corrija manualmente esses itens no MongoDB (ou cadastre a plataforma correta pela aplicação) e só então aplique os vínculos encontrados:
+
+```shell
+docker compose exec backend node scripts/migrate-rawg-to-igdb.js --apply
+```
+
+Depois da migração, consoles sem `igdbId` continuam funcionais para cadastro manual, mas não podem ser usados na busca do IGDB até receberem o ID correspondente.
 
 ## 💾 Database Management
 
@@ -95,4 +114,3 @@ All thanks to my great friend and brother **[Tiago-S-Ribeiro](https://github.com
 
 ---
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
-
