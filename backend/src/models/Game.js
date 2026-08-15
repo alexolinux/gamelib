@@ -14,11 +14,14 @@ const gameSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  // Retained only to preserve records created before the IGDB migration.
   rawgId: {
     type: Number,
-    unique: true,
     sparse: true,
     default: null,
+  },
+  igdbId: {
+    type: Number,
   },
   releaseDate: Date,
   cover: String,
@@ -34,6 +37,11 @@ const gameSchema = new mongoose.Schema({
     default: 'Backlog',
   },
 }, { timestamps: true });
+
+gameSchema.index(
+  { console: 1, igdbId: 1 },
+  { unique: true, partialFilterExpression: { igdbId: { $type: 'number' } } }
+);
 
 const Game = mongoose.model('Game', gameSchema);
 
