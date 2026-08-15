@@ -2,16 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Console = require('../models/Console');
 const Game = require('../models/Game');
-const rawgService = require('../services/rawg.service');
+const igdbService = require('../services/igdb.service');
 
-// Get all RAWG platforms for the dropdown list
-router.get('/rawg-platforms', async (req, res) => {
+// Get all IGDB platforms for the dropdown list
+router.get('/igdb-platforms', async (req, res) => {
   try {
-    const platforms = await rawgService.getPlatforms();
+    const platforms = await igdbService.getPlatforms();
     const formattedPlatforms = platforms.map(p => ({ id: p.id, name: p.name })).sort((a, b) => a.name.localeCompare(b.name));
     res.json(formattedPlatforms);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching platforms from RAWG.io', error });
+    res.status(502).json({ message: 'Error fetching platforms from IGDB.', error: error.message });
   }
 });
 
@@ -27,17 +27,17 @@ router.get('/', async (req, res) => {
 
 // Create a new console
 router.post('/', async (req, res) => {
-  const { name, rawgId } = req.body;
+  const { name, igdbId } = req.body;
   try {
     const newConsole = new Console({ 
       name, 
-      rawgId: rawgId ? Number(rawgId) : null
+      igdbId: igdbId ? Number(igdbId) : null
     });
     await newConsole.save();
     res.status(201).json(newConsole);
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).json({ message: 'A console with this name or RAWG ID already exists.' });
+      return res.status(409).json({ message: 'A console with this name or IGDB ID already exists.' });
     }
     res.status(400).json({ message: 'Error creating console', error: error.message });
   }

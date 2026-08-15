@@ -2,20 +2,23 @@ const express = require('express');
 const router = express.Router();
 const Game = require('../models/Game');
 const Console = require('../models/Console');
-const rawgService = require('../services/rawg.service');
+const igdbService = require('../services/igdb.service');
 
-// Search games on RAWG.io
-router.get('/rawg-search', async (req, res) => {
+// Search games on IGDB
+router.get('/igdb-search', async (req, res) => {
   const { query, consoleId } = req.query;
   try {
-    const consoleDoc = await Console.findById(consoleId);
-    if (!consoleDoc || !consoleDoc.rawgId) {
-      return res.status(400).json({ message: 'Invalid console or missing RAWG ID.' });
+    if (!query || !String(query).trim()) {
+      return res.status(400).json({ message: 'A search query is required.' });
     }
-    const games = await rawgService.searchGames(query, consoleDoc.rawgId);
+    const consoleDoc = await Console.findById(consoleId);
+    if (!consoleDoc || !consoleDoc.igdbId) {
+      return res.status(400).json({ message: 'Invalid console or missing IGDB ID.' });
+    }
+    const games = await igdbService.searchGames(query, consoleDoc.igdbId);
     res.json(games);
   } catch (error) {
-    res.status(500).json({ message: 'Error searching games from RAWG.io', error });
+    res.status(502).json({ message: 'Error searching games from IGDB.', error: error.message });
   }
 });
 
@@ -30,13 +33,13 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// Add a game to the catalog (from RAWG or manually)
+// Add a game to the catalog (from IGDB or manually)
 router.post('/', async (req, res) => {
-  const { name, console, rawgId, releaseDate, cover, metacriticRating, userRating, status, isWishlist } = req.body;
+  const { name, console, igdbId, releaseDate, cover, metacriticRating, userRating, status, isWishlist } = req.body;
   try {
-    // Check for existing game with the same rawgId and console
-    if (rawgId) {
-      const existingGame = await Game.findOne({ rawgId, console });
+    // IGDB identifies a game globally; a collection can contain it once per console.
+    if (igdbId) {
+      const existingGame = await Game.findOne({ igdbId, console });
       if (existingGame) {
         return res.status(409).json({ message: 'This game already exists in your catalog for this console.' });
       }
@@ -45,7 +48,7 @@ router.post('/', async (req, res) => {
     const newGame = new Game({
       name,
       console,
-      rawgId: rawgId || null,
+      igdbId: igdbId || null,
       releaseDate: releaseDate || null,
       cover: cover || null,
       metacriticRating: metacriticRating || null,
