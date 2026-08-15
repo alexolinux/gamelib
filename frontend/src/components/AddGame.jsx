@@ -5,7 +5,7 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
   const [selectedConsole, setSelectedConsole] = useState('');
   const [showManualForm, setShowManualForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [rawgGames, setRawgGames] = useState([]);
+  const [igdbGames, setIgdbGames] = useState([]);
 
   // Manual form state
   const [manualName, setManualName] = useState('');
@@ -22,18 +22,18 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
       }
 
       const consoleDoc = consoles.find(c => c._id === selectedConsole);
-      if (!consoleDoc || !consoleDoc.rawgId) {
-        alert('Selected console does not have a RAWG ID for searching.');
+      if (!consoleDoc || !consoleDoc.igdbId) {
+        alert('Selected console does not have an IGDB ID for searching.');
         return;
       }
 
-      const response = await api.get('/games/rawg-search', {
+      const response = await api.get('/games/igdb-search', {
         params: {
           query: searchQuery,
           consoleId: selectedConsole
         }
       });
-      setRawgGames(response.data);
+      setIgdbGames(response.data);
     } catch (error) {
       alert(error.response?.data?.message || 'Error searching for games.');
     }
@@ -49,14 +49,14 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
     }
   };
 
-  const handleAddRawgGame = (game, isWishlist) => {
+  const handleAddIgdbGame = (game, isWishlist) => {
     addGame({
       name: game.name,
       console: selectedConsole,
-      rawgId: game.id,
-      releaseDate: game.released,
-      cover: game.background_image,
-      metacriticRating: game.metacritic,
+      igdbId: game.id,
+      releaseDate: game.releaseDate,
+      cover: game.cover,
+      userRating: game.rating,
       isWishlist
     });
   };
@@ -153,7 +153,7 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
               </div>
             </form>
           ) : (
-            // RAWG Search Form
+            // IGDB Search Form
             <>
               <div className="flex space-x-2 mb-4">
                 <input
@@ -164,20 +164,20 @@ const AddGame = ({ consoles, onGameAdded, onClose }) => {
                   className="flex-grow p-2 rounded bg-gray-700 border border-gray-600 text-white"
                 />
                 <button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold">
-                  Search on RAWG
+                  Search on IGDB
                 </button>
               </div>
-              {rawgGames.length > 0 && (
+              {igdbGames.length > 0 && (
                 <div className="mt-4 p-4 bg-gray-700 rounded-lg max-h-48 overflow-y-auto">
                   <h3 className="font-bold mb-2">Search Results</h3>
-                  {rawgGames.map(game => (
+                  {igdbGames.map(game => (
                     <div key={game.id} className="flex items-center p-2 border-b border-gray-600 last:border-0">
                       <span className="flex-grow">{game.name}</span>
                       <div className="flex space-x-2">
-                        <button onClick={() => handleAddRawgGame(game, false)} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">
+                        <button onClick={() => handleAddIgdbGame(game, false)} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">
                           Add Game
                         </button>
-                        <button onClick={() => handleAddRawgGame(game, true)} className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-sm">
+                        <button onClick={() => handleAddIgdbGame(game, true)} className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-sm">
                           Add to Wishlist
                         </button>
                       </div>
